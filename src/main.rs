@@ -33,11 +33,11 @@ fn resultat_restant(nbr: i32) -> String {
     return resultat;
 }
 
-fn main() {
+fn jouer() -> bool {
     std::process::Command::new("clear").status().unwrap();
     let nb_mystere = get_nb_mystere();
     let nom = input("Quel est ton nom : ");
-    println!("Bienvenue {nom}, tu vas devoir trouver le nombre auquel je pense entre 1 et 100");
+    println!("Bienvenue {nom}, tu vas devoir trouver le nombre auquel je pense entre 1 et 100, au fait tu as 6 tentatives");
     let mut tentatives = 6;
 
     loop {
@@ -45,11 +45,11 @@ fn main() {
         if tentatives > 0 {
             let saisie_ok = str_to_int(&input("Quel est ta proposition ? :"));
             if saisie_ok == -1 {
-                println!("Seul les nombre en 1 et 100 sont considérés comme des choix valides");
+                println!("Au fait, on cherche un nombre");
                 continue;
             }
             if saisie_ok < 1 || saisie_ok > 100 {
-                println!("La valeur saisie doit être comprise entre 1 et 100");
+                println!("T'as pas bien compris la consigne : le nombre se situe entre 1 et 100");
                 continue;
             }
             saisie = saisie_ok;
@@ -60,7 +60,7 @@ fn main() {
             println!(
                 "Désolé {nom} tu n'as pas réussi à trouver le nombre {nb_mystere} en 6 tentatives"
             );
-            break;
+            return false;
         }
 
         if saisie == nb_mystere {
@@ -71,10 +71,10 @@ fn main() {
             };
             if essai == 1 {
                 println!("Bravo {nom} tu as trouvé {resultat}");
-                break;
+                return false;
             } else {
                 println!("Bravo {nom} tu as trouvé en {} {}", essai, resultat);
-                break;
+                return false;
             }
         } else if saisie < nb_mystere {
             let phrase_resulat = resultat_restant(tentatives);
@@ -84,6 +84,23 @@ fn main() {
         } else {
             let phrase_resulat = resultat_restant(tentatives);
             println!("{nom} le nombre à trouver est plus petit que {saisie}, {phrase_resulat}");
+        }
+    }
+}
+
+fn main() {
+    let mut first = true;
+    loop {
+        if first {
+            first = jouer();
+        } else {
+            let reponse = input("Si tu veux retenter ta chance saisie : O");
+            if reponse == "O" {
+                first = jouer();
+            } else {
+                println!("Tchao");
+                break;
+            }
         }
     }
 }
