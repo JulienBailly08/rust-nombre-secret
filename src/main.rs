@@ -37,10 +37,24 @@ fn main() {
     std::process::Command::new("clear").status().unwrap();
     let nb_mystere = get_nb_mystere();
     let nom = input("Quel est ton nom : ");
-    println!("Tu vas devoir trouver le nombre auquel je pense entre 1 et 100");
+    println!("Bienvenue {nom}, tu vas devoir trouver le nombre auquel je pense entre 1 et 100");
     let mut tentatives = 6;
 
     loop {
+        let mut saisie: i16 = 0;
+        if tentatives > 0 {
+            let saisie_ok = str_to_int(&input("Quel est ta proposition ? :"));
+            if saisie_ok == -1 {
+                println!("Seul les nombre en 1 et 100 sont considérés comme des choix valides");
+                continue;
+            }
+            if saisie_ok < 1 || saisie_ok > 100 {
+                println!("La valeur saisie doit être comprise entre 1 et 100");
+                continue;
+            }
+            saisie = saisie_ok;
+        }
+
         tentatives -= 1;
         if tentatives < 0 {
             println!(
@@ -48,8 +62,6 @@ fn main() {
             );
             break;
         }
-
-        let saisie = str_to_int(&input("Quel est ta proposition ? :"));
 
         if saisie == nb_mystere {
             let essai = 6 - tentatives;
